@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,11 @@ public class IEmailService implements EmailService {
 
     @Override
     public void sendEmail(EmailDTO emailDTO) throws MessagingException {
+        Assert.notNull(emailDTO, "EmailDTO must not be null");
+        Assert.hasText(emailDTO.destination(), "Destination email must not be null or empty");
+        Assert.hasText(emailDTO.subject(), "Subject must not be null or empty");
+        Assert.hasText(emailDTO.body(), "Body must not be null or empty");
+
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -34,6 +40,10 @@ public class IEmailService implements EmailService {
 
     @Override
     public void sendCredentialsEmail(String destination, String email, String password) throws MessagingException {
+        Assert.hasText(destination, "Destination email must not be null or empty");
+        Assert.hasText(email, "Email must not be null or empty");
+        Assert.hasText(password, "Password must not be null or empty");
+
         String subject = "Your account has been created";
         String body = "Your account has been created with the following credentials: <br>"
                 + "<b>Email:</b> " + email + "<br>"

@@ -6,6 +6,6 @@ import com.example.employessytem.dto.employee.EmployeeLogin;
 import com.example.employessytem.dto.employee.EmployeeResponse;
 
 public interface AuthService {
-    EmployeeResponse registerEmployee (EmployeeAdd employeeAdd);
     TokenResponse login(EmployeeLogin employeeLogin);
+    TokenResponse refreshToken(String authentication);
 }

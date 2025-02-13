@@ -1,7 +1,10 @@
 package com.example.employessytem.entity;
 
+import com.example.employessytem.dto.employee.EmployeeAdd;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +22,15 @@ public class User {
     private String email;
     private String password;
     private String position;
+    private Date createdAt;
+    private Long salary;
 
     private Role role;
+
+    public void updateInfo(EmployeeAdd employeeAdd) {
+        this.name = employeeAdd.name();
+        this.email = employeeAdd.email();
+        this.position = employeeAdd.position();
+        this.salary = employeeAdd.salary();
+    }
 }

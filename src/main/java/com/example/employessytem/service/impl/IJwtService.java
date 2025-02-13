@@ -29,6 +29,10 @@ public class IJwtService {
     return buildToken(user, jwtExpiration);
   }
 
+  public String generateRefreshToken(User user) {
+    return buildToken(user, refreshTokenExpiration);
+  }
+
   private String buildToken(User user, long expiration) {
     return Jwts.builder()
         .id(user.getId().toString())

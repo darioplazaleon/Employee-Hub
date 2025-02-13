@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Random;
 
 @Service
@@ -27,31 +28,7 @@ public class IAuthService implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final IJwtService jwtService;
 
-    @Override
-    public EmployeeResponse registerEmployee(EmployeeAdd employeeAdd) {
-        Role role = determineRole(employeeAdd);
 
-        String randomPassword = generateRandomPassword();
-
-        var user = User.builder()
-                .email(employeeAdd.email())
-                .position(employeeAdd.position())
-                .name(employeeAdd.name())
-                .role(role)
-                .password(passwordEncoder.encode(randomPassword))
-                .build();
-
-        var savedUser = userRepository.save(user);
-
-        try {
-            emailService.sendCredentialsEmail(employeeAdd.email(), employeeAdd.email(), randomPassword);
-        } catch (MessagingException e) {
-            // Handle the exception, e.g., log the error
-            e.printStackTrace();
-        }
-
-        return new EmployeeResponse(savedUser, randomPassword);
-    }
 
     @Override
     public TokenResponse login(EmployeeLogin employeeLogin) {
@@ -61,25 +38,31 @@ public class IAuthService implements AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String accessToken = jwtService.generateToken(user);
-        return new TokenResponse(accessToken, "refreshToken");
+        String refreshToken = jwtService.generateRefreshToken(user);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
-    private Role determineRole(EmployeeAdd employeeAdd) {
-        if ("manager".equalsIgnoreCase(employeeAdd.position())) {
-            return Role.MANAGER;
-        } else {
-            return Role.USER;
+    @Override
+    public TokenResponse refreshToken(String authentication) {
+        if (authentication == null || !authentication.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid auth header");
         }
-    }
-
-    private static String generateRandomPassword() {
-        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        Random rnd = new Random();
-
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        final String refreshToken = authentication.substring(7);
+        final String userEmail = jwtService.getSubject(refreshToken);
+        if (userEmail == null) {
+            return null;
         }
-        return sb.toString();
+
+        final User user = userRepository.findByEmail(userEmail).orElseThrow();
+        final boolean isTokenValid = jwtService.isValidTokenPerUser(refreshToken, userEmail);
+        if (!isTokenValid) {
+            return null;
+        }
+
+        final String accessToken = jwtService.generateRefreshToken(user);
+
+        return new TokenResponse(accessToken, refreshToken);
     }
+
+
 }

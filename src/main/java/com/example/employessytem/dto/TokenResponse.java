@@ -1,6 +1,7 @@
 package com.example.employessytem.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record TokenResponse(
-    String accessToken,
-    String refreshToken
-) {}
+    @JsonProperty("access_token") String accessToken,
+    @JsonProperty("refresh_token") String refreshToken) {}

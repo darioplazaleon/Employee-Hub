@@ -4,15 +4,15 @@ import com.example.employessytem.entity.User;
 
 import java.util.Date;
 
-public record EmployeeResponse(
+public record EmployeeDTO(
         Long id,
         String name,
         String email,
-        String password,
         String position,
+        Long salary,
         Date entry_date
 ) {
-    public EmployeeResponse(User user, String password) {
-    this(user.getId(), user.getName(), user.getEmail(), password, user.getPosition(), user.getCreatedAt());
+    public EmployeeDTO(User user) {
+        this(user.getId(), user.getName(), user.getEmail(), user.getPosition(), user.getSalary(), user.getCreatedAt());
     }
 }
