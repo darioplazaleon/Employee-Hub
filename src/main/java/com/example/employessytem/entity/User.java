@@ -4,7 +4,9 @@ import com.example.employessytem.dto.employee.EmployeeAdd;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -26,6 +28,9 @@ public class User {
     private Long salary;
 
     private Role role;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<VacationRequest> vacationRequests = new ArrayList<>();
 
     public void updateInfo(EmployeeAdd employeeAdd) {
         this.name = employeeAdd.name();

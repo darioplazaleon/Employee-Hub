@@ -10,6 +10,7 @@ import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -116,5 +117,9 @@ public class IUserService implements UserService {
       sb.append(AB.charAt(rnd.nextInt(AB.length())));
     }
     return sb.toString();
+  }
+
+  public List<String> findEmailsByRoles() {
+    return userRepository.findEmailsByRoles(List.of(Role.ADMIN, Role.MANAGER));
   }
 }

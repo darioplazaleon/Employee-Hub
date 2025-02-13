@@ -1,32 +1,46 @@
 package com.example.employessytem.controller;
 
-import com.example.employessytem.dto.TokenResponse;
 import com.example.employessytem.dto.employee.EmployeeAdd;
-import com.example.employessytem.dto.employee.EmployeeLogin;
+import com.example.employessytem.dto.employee.EmployeeDTO;
+import com.example.employessytem.dto.employee.EmployeeListDTO;
 import com.example.employessytem.dto.employee.EmployeeResponse;
-import com.example.employessytem.service.impl.IAuthService;
+import com.example.employessytem.service.impl.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IAuthService authService;
+    private final IUserService userService;
 
-    @PostMapping("/register")
-    private ResponseEntity<EmployeeResponse> registerEmployee(@RequestBody EmployeeAdd employeeAdd) {
-        return ResponseEntity.ok(authService.registerEmployee(employeeAdd));
+    @PostMapping("/create")
+    public ResponseEntity<EmployeeResponse> createEmployee(@RequestBody EmployeeAdd employeeAdd) {
+        return ResponseEntity.ok(userService.registerEmployee(employeeAdd));
     }
 
-    @PostMapping("/login")
-    private ResponseEntity<TokenResponse> loginEmployee(@RequestBody EmployeeLogin employeeLogin) {
-        return ResponseEntity.ok(authService.login(employeeLogin));
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getEmployee(id));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<EmployeeListDTO>> getAllEmployees(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllEmployees(pageable));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeResponse> updateEmployee(@PathVariable Long id, @RequestBody EmployeeAdd employeeAdd) {
+        return ResponseEntity.ok(userService.updateEmployee(id, employeeAdd));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        userService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
     }
 }

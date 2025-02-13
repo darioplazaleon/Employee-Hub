@@ -69,6 +69,15 @@ public class IJwtService {
     return getClaims(token).getExpiration();
   }
 
+  public Long getUserIdFromToken(String token) {
+    if (token.startsWith("Bearer ")) {
+      token = token.substring(7);
+    }
+
+    Claims claims = getClaims(token);
+    return Long.parseLong(claims.getId());
+  }
+
   private SecretKey getSecretKey() {
     byte[] secretBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(secretBytes);
