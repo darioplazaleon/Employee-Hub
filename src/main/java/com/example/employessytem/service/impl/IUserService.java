@@ -9,11 +9,10 @@ import com.example.employessytem.entity.User;
 import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +43,7 @@ public class IUserService implements UserService {
             .createdAt(new Date())
             .role(role)
             .password(passwordEncoder.encode(randomPassword))
+            .vacationRequests(List.of())
             .build();
 
     System.out.println("User" + user);
@@ -75,29 +75,46 @@ public class IUserService implements UserService {
 
   @Override
   public EmployeeResponse updateEmployee(Long id, EmployeeAdd employeeAdd) {
-      var foundUser = userRepository.findById(id);
+    var foundUser = userRepository.findById(id);
 
-      if (foundUser.isEmpty()) {
-          throw new EntityNotFoundException("User not found");
-      }
+    if (foundUser.isEmpty()) {
+      throw new EntityNotFoundException("User not found");
+    }
 
-      var user = foundUser.get();
+    var user = foundUser.get();
 
-      user.updateInfo(employeeAdd);
-      userRepository.save(user);
+    user.updateInfo(employeeAdd);
+    userRepository.save(user);
 
-      return new EmployeeResponse(user, null);
+    return new EmployeeResponse(user, null);
   }
 
   @Override
   public void deleteEmployee(Long id) {
-      var foundUser = userRepository.findById(id);
+    var foundUser = userRepository.findById(id);
 
-      if (foundUser.isEmpty()) {
-          throw new EntityNotFoundException("User not found");
-      } else {
-            userRepository.deleteById(id);
-      }
+    if (foundUser.isEmpty()) {
+      throw new EntityNotFoundException("User not found");
+    } else {
+      userRepository.deleteById(id);
+    }
+  }
+
+  public EmployeeDTO registerAdmin() {
+    var user =
+        User.builder()
+            .email("darioalessandrop@gmail.com")
+            .position("admin")
+            .role(Role.ADMIN)
+            .salary(100000L)
+            .name("Dario")
+            .createdAt(new Date())
+            .password(passwordEncoder.encode("4102002"))
+            .build();
+
+    userRepository.save(user);
+
+    return new EmployeeDTO(user);
   }
 
   private Role determineRole(EmployeeAdd employeeAdd) {

@@ -1,5 +1,6 @@
 package com.example.employessytem;
 
+import com.example.employessytem.service.impl.IUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,4 +13,13 @@ public class EmployesSytemApplication {
         SpringApplication.run(EmployesSytemApplication.class, args);
     }
 
+//    @Bean
+//    public CommandLineRunner run(IUserService userService) {
+//        return args -> {
+//            var admin = userService.registerAdmin();
+//
+//            System.out.println("Admin: " + admin);
+//        };
+//
+//    }
 }

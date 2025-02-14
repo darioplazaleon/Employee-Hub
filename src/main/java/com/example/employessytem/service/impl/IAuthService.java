@@ -28,8 +28,6 @@ public class IAuthService implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final IJwtService jwtService;
 
-
-
     @Override
     public TokenResponse login(EmployeeLogin employeeLogin) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(employeeLogin.email(), employeeLogin.password()));
@@ -63,6 +61,5 @@ public class IAuthService implements AuthService {
 
         return new TokenResponse(accessToken, refreshToken);
     }
-
 
 }
