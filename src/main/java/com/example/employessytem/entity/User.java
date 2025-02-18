@@ -4,9 +4,10 @@ import com.example.employessytem.dto.employee.EmployeeAdd;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -28,8 +29,13 @@ public class User implements UserDetails {
   private String email;
   private String password;
   private String position;
-  private Date createdAt;
+
+  @Column(name = "created_at", updatable = false)
+  private LocalDate createdAt;
+
+
   private Long salary;
+  private boolean active;
 
   @Enumerated(EnumType.STRING)
   private Role role;
@@ -52,5 +58,10 @@ public class User implements UserDetails {
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDate.now();
   }
 }

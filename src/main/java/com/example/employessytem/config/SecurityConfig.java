@@ -1,10 +1,12 @@
 package com.example.employessytem.config;
 
+import static com.example.employessytem.entity.Permission.ADMIN_WRITE;
 import static com.example.employessytem.entity.Role.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -58,7 +60,7 @@ public class SecurityConfig {
                     .hasAnyRole(ADMIN.name(), MANAGER.name(), USER.name())
                     .requestMatchers("/api/v1/user/{id}", "/api/v1/user/{id}", "/api/v1/user/{id}")
                     .hasAnyRole(ADMIN.name(), MANAGER.name(), USER.name())
-                    .requestMatchers("/api/v1/user/create")
+                    .requestMatchers(HttpMethod.POST ,"/api/v1/user/create/**")
                     .hasAnyRole(ADMIN.name())
                     .anyRequest()
                     .authenticated())

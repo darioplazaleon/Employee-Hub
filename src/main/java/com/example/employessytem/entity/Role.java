@@ -1,10 +1,11 @@
 package com.example.employessytem.entity;
 
+import static com.example.employessytem.entity.Permission.*;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,28 +14,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public enum Role {
   ADMIN(
       Set.of(
-          Permission.ADMIN_READ,
-          Permission.ADMIN_WRITE,
-          Permission.ADMIN_UPDATE,
-          Permission.ADMIN_DELETE,
-          Permission.MANAGER_READ,
-          Permission.MANAGER_WRITE,
-          Permission.MANAGER_UPDATE,
-          Permission.MANAGER_DELETE)),
-  MANAGER(
-      Set.of(
-          Permission.MANAGER_READ,
-          Permission.MANAGER_WRITE,
-          Permission.MANAGER_UPDATE,
-          Permission.MANAGER_DELETE)),
-  USER(
-      Set.of(
-          Permission.USER_READ,
-          Permission.USER_WRITE,
-          Permission.USER_UPDATE,
-          Permission.USER_DELETE));
+          ADMIN_WRITE,
+          ADMIN_READ,
+          ADMIN_DELETE,
+          ADMIN_UPDATE,
+          MANAGER_DELETE,
+          MANAGER_UPDATE,
+          MANAGER_WRITE,
+          MANAGER_READ)),
+  MANAGER(Set.of(MANAGER_DELETE, MANAGER_UPDATE, MANAGER_WRITE, MANAGER_READ)),
+  USER(Collections.emptySet());
 
-  @Getter private final Set<Permission> permissions;
+  @Getter
+  private final Set<Permission> permissions;
 
   public List<SimpleGrantedAuthority> getAuthorities() {
     var authorities =

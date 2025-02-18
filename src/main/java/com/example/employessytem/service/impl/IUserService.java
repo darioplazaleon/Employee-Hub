@@ -10,7 +10,6 @@ import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -29,28 +28,26 @@ public class IUserService implements UserService {
 
   @Override
   public EmployeeResponse registerEmployee(EmployeeAdd employeeAdd) {
-    Role role = determineRole(employeeAdd);
+
+    if (userRepository.existsByEmail(employeeAdd.email())) {
+      throw new RuntimeException("User with this email already exists");
+    }
 
     String randomPassword = generateRandomPassword();
-
-    System.out.println("Employee add" + employeeAdd);
 
     var user =
         User.builder()
             .email(employeeAdd.email())
             .position(employeeAdd.position())
             .name(employeeAdd.name())
-            .createdAt(new Date())
-            .role(role)
+            .role(employeeAdd.role())
+            .salary(employeeAdd.salary())
             .password(passwordEncoder.encode(randomPassword))
+            .active(true)
             .vacationRequests(List.of())
             .build();
 
-    System.out.println("User" + user);
-
     var savedUser = userRepository.save(user);
-
-    System.out.println("Saved User" + savedUser);
 
     try {
       emailService.sendCredentialsEmail(employeeAdd.email(), employeeAdd.email(), randomPassword);
@@ -108,7 +105,7 @@ public class IUserService implements UserService {
             .role(Role.ADMIN)
             .salary(100000L)
             .name("Dario")
-            .createdAt(new Date())
+            .active(true)
             .password(passwordEncoder.encode("4102002"))
             .build();
 
@@ -117,12 +114,8 @@ public class IUserService implements UserService {
     return new EmployeeDTO(user);
   }
 
-  private Role determineRole(EmployeeAdd employeeAdd) {
-    if ("manager".equalsIgnoreCase(employeeAdd.position())) {
-      return Role.MANAGER;
-    } else {
-      return Role.USER;
-    }
+  public boolean adminExists() {
+    return userRepository.existsByEmail("darioalessandrop@gmail.com");
   }
 
   private static String generateRandomPassword() {

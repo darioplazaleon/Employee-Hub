@@ -49,6 +49,10 @@ public class IVacationService implements VacationService {
         vacation.setStatus(VacationStatus.APPROVED);
         vacationRepository.save(vacation);
 
+        User user = vacation.getEmployee();
+        user.setActive(false);
+        userRepository.save(user);
+
         emailService.sendVacationApprovedEmail(vacation.getEmployee());
 
         return new VacationDTO(vacation);

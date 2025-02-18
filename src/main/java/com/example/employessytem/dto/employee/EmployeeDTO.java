@@ -2,7 +2,7 @@ package com.example.employessytem.dto.employee;
 
 import com.example.employessytem.entity.User;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record EmployeeDTO(
         Long id,
@@ -10,7 +10,7 @@ public record EmployeeDTO(
         String email,
         String position,
         Long salary,
-        Date entry_date
+        LocalDate createdAt
 ) {
     public EmployeeDTO(User user) {
         this(user.getId(), user.getName(), user.getEmail(), user.getPosition(), user.getSalary(), user.getCreatedAt());

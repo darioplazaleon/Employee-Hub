@@ -9,17 +9,19 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class EmployesSytemApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(EmployesSytemApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(EmployesSytemApplication.class, args);
+  }
 
-//    @Bean
-//    public CommandLineRunner run(IUserService userService) {
-//        return args -> {
-//            var admin = userService.registerAdmin();
-//
-//            System.out.println("Admin: " + admin);
-//        };
-//
-//    }
+  @Bean
+  public CommandLineRunner run(IUserService userService) {
+    return args -> {
+      if (!userService.adminExists()) {
+        var admin = userService.registerAdmin();
+        System.out.println("Admin: " + admin);
+      } else {
+        System.out.println("Admin already exists.");
+      }
+    };
+  }
 }
