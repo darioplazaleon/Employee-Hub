@@ -8,11 +8,9 @@ import com.example.employessytem.entity.VacationStatus;
 import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.repository.VacationRepository;
 import com.example.employessytem.service.VacationService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class IVacationService implements VacationService {
         User user = userRepository.findById(employeeId).orElseThrow(() -> new RuntimeException("Employee not found"));
 
         var vacation = VacationRequest.builder()
+                .title(vacationAdd.title())
                 .employee(user)
                 .startDate(vacationAdd.startDate())
                 .endDate(vacationAdd.endDate())
@@ -44,8 +43,12 @@ public class IVacationService implements VacationService {
     }
 
     @Override
-    public VacationDTO approveVacation(Long vacationId) {
+    public VacationDTO approveVacation(Long vacationId, String token) {
         VacationRequest vacation = vacationRepository.findById(vacationId).orElseThrow(() -> new RuntimeException("Vacation request not found"));
+        Long managerId = jwtService.getUserIdFromToken(token);
+
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found"));
+        vacation.setApprovedBy(manager);
         vacation.setStatus(VacationStatus.APPROVED);
         vacationRepository.save(vacation);
 
@@ -59,8 +62,13 @@ public class IVacationService implements VacationService {
     }
 
     @Override
-    public VacationDTO rejectVacation(Long vacationId) {
+    public VacationDTO rejectVacation(Long vacationId, String token) {
         VacationRequest vacation = vacationRepository.findById(vacationId).orElseThrow(() -> new RuntimeException("Vacation request not found"));
+
+        Long managerId = jwtService.getUserIdFromToken(token);
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found"));
+        vacation.setApprovedBy(manager);
+
         vacation.setStatus(VacationStatus.REJECTED);
         vacationRepository.save(vacation);
 

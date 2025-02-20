@@ -22,13 +22,13 @@ public class VacationController {
     }
 
     @PutMapping("/approve/{vacationId}")
-    public ResponseEntity<VacationDTO> approveVacation(@PathVariable Long vacationId) {
-        return ResponseEntity.ok(vacationService.approveVacation(vacationId));
+    public ResponseEntity<VacationDTO> approveVacation(@PathVariable Long vacationId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return ResponseEntity.ok(vacationService.approveVacation(vacationId, token));
     }
 
     @PutMapping("/reject/{vacationId}")
-    public ResponseEntity<VacationDTO> rejectVacation(@PathVariable Long vacationId) {
-        return ResponseEntity.ok(vacationService.rejectVacation(vacationId));
+    public ResponseEntity<VacationDTO> rejectVacation(@PathVariable Long vacationId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return ResponseEntity.ok(vacationService.rejectVacation(vacationId, token));
     }
 
     @GetMapping("/all")

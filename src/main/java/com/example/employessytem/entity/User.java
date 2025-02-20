@@ -60,6 +60,11 @@ public class User implements UserDetails {
     return email;
   }
 
+  @Override
+  public String toString() {
+    return "User{id=" + id + ", name='" + name + "', email='" + email + "', position='" + position + "', salary=" + salary + "}";
+  }
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDate.now();
