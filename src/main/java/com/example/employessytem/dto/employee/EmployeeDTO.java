@@ -2,7 +2,6 @@ package com.example.employessytem.dto.employee;
 
 import com.example.employessytem.dto.vacation.VacationDTO;
 import com.example.employessytem.entity.User;
-import com.example.employessytem.entity.VacationRequest;
 
 import java.time.LocalDate;
 import java.util.List;
