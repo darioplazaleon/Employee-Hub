@@ -1,6 +1,7 @@
 package com.example.employessytem.dto.employee;
 
 import com.example.employessytem.dto.vacation.VacationDTO;
+import com.example.employessytem.entity.Position;
 import com.example.employessytem.entity.User;
 
 import java.time.LocalDate;
@@ -16,6 +17,6 @@ public record EmployeeDTO(
         List<VacationDTO> vacationRequests
 ) {
     public EmployeeDTO(User user) {
-        this(user.getId(), user.getName(), user.getEmail(), user.getPosition(), user.getSalary(), user.getCreatedAt(), user.getVacationRequests().stream().map(VacationDTO::new).toList());
+        this(user.getId(), user.getName(), user.getEmail(), user.getPosition().getName(), user.getSalary(), user.getCreatedAt(), user.getVacationRequests().stream().map(VacationDTO::new).toList());
     }
 }

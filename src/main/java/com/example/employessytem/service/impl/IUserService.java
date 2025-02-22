@@ -4,8 +4,10 @@ import com.example.employessytem.dto.employee.EmployeeAdd;
 import com.example.employessytem.dto.employee.EmployeeDTO;
 import com.example.employessytem.dto.employee.EmployeeListDTO;
 import com.example.employessytem.dto.employee.EmployeeResponse;
+import com.example.employessytem.entity.Position;
 import com.example.employessytem.entity.Role;
 import com.example.employessytem.entity.User;
+import com.example.employessytem.repository.PositionRepository;
 import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
@@ -25,6 +27,7 @@ public class IUserService implements UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final IEmailService emailService;
+  private final PositionRepository positionRepository;
 
   @Override
   public EmployeeResponse registerEmployee(EmployeeAdd employeeAdd) {
@@ -33,12 +36,14 @@ public class IUserService implements UserService {
       throw new RuntimeException("User with this email already exists");
     }
 
+    Position position = positionRepository.findById(employeeAdd.positionId()).orElseThrow();
+
     String randomPassword = generateRandomPassword();
 
     var user =
         User.builder()
             .email(employeeAdd.email())
-            .position(employeeAdd.position())
+            .position(position)
             .name(employeeAdd.name())
             .role(employeeAdd.role())
             .salary(employeeAdd.salary())
@@ -78,9 +83,11 @@ public class IUserService implements UserService {
       throw new EntityNotFoundException("User not found");
     }
 
+    Position position = positionRepository.findById(employeeAdd.positionId()).orElseThrow();
+
     var user = foundUser.get();
 
-    user.updateInfo(employeeAdd);
+    user.updateInfo(employeeAdd, position);
     userRepository.save(user);
 
     return new EmployeeResponse(user, null);
@@ -98,10 +105,13 @@ public class IUserService implements UserService {
   }
 
   public EmployeeDTO registerAdmin() {
+
+    Position position = positionRepository.findById(1L).orElseThrow();
+
     var user =
         User.builder()
             .email("darioalessandrop@gmail.com")
-            .position("admin")
+            .position(position)
             .role(Role.ADMIN)
             .salary(100000L)
             .name("Dario")

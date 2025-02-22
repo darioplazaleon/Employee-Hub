@@ -2,16 +2,13 @@ package com.example.employessytem.entity;
 
 import com.example.employessytem.dto.employee.EmployeeAdd;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -28,11 +25,13 @@ public class User implements UserDetails {
   private String name;
   private String email;
   private String password;
-  private String position;
+
+  @ManyToOne
+  @JoinColumn(name = "position_id")
+  private Position position;
 
   @Column(name = "created_at", updatable = false)
   private LocalDate createdAt;
-
 
   private Long salary;
   private boolean active;
@@ -43,10 +42,10 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<VacationRequest> vacationRequests = new ArrayList<>();
 
-  public void updateInfo(EmployeeAdd employeeAdd) {
+  public void updateInfo(EmployeeAdd employeeAdd, Position position) {
     this.name = employeeAdd.name();
     this.email = employeeAdd.email();
-    this.position = employeeAdd.position();
+    this.position = position;
     this.salary = employeeAdd.salary();
   }
 
@@ -62,7 +61,17 @@ public class User implements UserDetails {
 
   @Override
   public String toString() {
-    return "User{id=" + id + ", name='" + name + "', email='" + email + "', position='" + position + "', salary=" + salary + "}";
+    return "User{id="
+        + id
+        + ", name='"
+        + name
+        + "', email='"
+        + email
+        + "', position='"
+        + position
+        + "', salary="
+        + salary
+        + "}";
   }
 
   @PrePersist

@@ -1,5 +1,6 @@
 package com.example.employessytem.dto.employee;
 
+import com.example.employessytem.entity.Position;
 import com.example.employessytem.entity.User;
 
 import java.time.LocalDate;
@@ -14,6 +15,6 @@ public record EmployeeResponse(
         LocalDate createdAt
 ) {
     public EmployeeResponse(User user, String password) {
-    this(user.getId(), user.getName(), user.getEmail(), password, user.getPosition(), user.getCreatedAt());
+    this(user.getId(), user.getName(), user.getEmail(), password, user.getPosition().getName(), user.getCreatedAt());
     }
 }
