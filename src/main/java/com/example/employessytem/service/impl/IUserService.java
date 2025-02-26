@@ -12,6 +12,8 @@ import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +51,7 @@ public class IUserService implements UserService {
             .salary(employeeAdd.salary())
             .password(passwordEncoder.encode(randomPassword))
             .active(true)
-            .vacationRequests(List.of())
+            .vacationRequests(new ArrayList<>())
             .build();
 
     var savedUser = userRepository.save(user);
