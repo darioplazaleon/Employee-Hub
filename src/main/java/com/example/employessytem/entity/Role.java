@@ -25,8 +25,7 @@ public enum Role {
   MANAGER(Set.of(MANAGER_DELETE, MANAGER_UPDATE, MANAGER_WRITE, MANAGER_READ)),
   USER(Collections.emptySet());
 
-  @Getter
-  private final Set<Permission> permissions;
+  @Getter private final Set<Permission> permissions;
 
   public List<SimpleGrantedAuthority> getAuthorities() {
     var authorities =

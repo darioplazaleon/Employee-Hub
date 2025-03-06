@@ -17,32 +17,33 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IUserService userService;
+  private final IUserService userService;
 
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<EmployeeResponse> createEmployee(@RequestBody EmployeeAdd employeeAdd) {
-        return ResponseEntity.ok(userService.registerEmployee(employeeAdd));
-    }
+  @PostMapping("/create")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<EmployeeResponse> createEmployee(@RequestBody EmployeeAdd employeeAdd) {
+    return ResponseEntity.ok(userService.registerEmployee(employeeAdd));
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getEmployee(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.getEmployee(id));
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<Page<EmployeeListDTO>> getAllEmployees(Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllEmployees(pageable));
-    }
+  @GetMapping("/all")
+  public ResponseEntity<Page<EmployeeListDTO>> getAllEmployees(Pageable pageable) {
+    return ResponseEntity.ok(userService.getAllEmployees(pageable));
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EmployeeResponse> updateEmployee(@PathVariable Long id, @RequestBody EmployeeAdd employeeAdd) {
-        return ResponseEntity.ok(userService.updateEmployee(id, employeeAdd));
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<EmployeeResponse> updateEmployee(
+      @PathVariable Long id, @RequestBody EmployeeAdd employeeAdd) {
+    return ResponseEntity.ok(userService.updateEmployee(id, employeeAdd));
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        userService.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    userService.deleteEmployee(id);
+    return ResponseEntity.noContent().build();
+  }
 }

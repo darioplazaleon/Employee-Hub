@@ -1,6 +1,5 @@
 package com.example.employessytem.config;
 
-import static com.example.employessytem.entity.Permission.ADMIN_WRITE;
 import static com.example.employessytem.entity.Role.*;
 
 import lombok.RequiredArgsConstructor;
@@ -60,7 +59,7 @@ public class SecurityConfig {
                     .hasAnyRole(ADMIN.name(), MANAGER.name(), USER.name())
                     .requestMatchers("/api/v1/user/{id}", "/api/v1/user/{id}", "/api/v1/user/{id}")
                     .hasAnyRole(ADMIN.name(), MANAGER.name(), USER.name())
-                    .requestMatchers(HttpMethod.POST ,"/api/v1/user/create/**")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/user/create/**")
                     .hasAnyRole(ADMIN.name())
                     .anyRequest()
                     .authenticated())

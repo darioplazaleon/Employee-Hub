@@ -5,13 +5,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 public class IJwtService {
@@ -56,7 +54,7 @@ public class IJwtService {
     return getClaims(token).getExpiration().after(new Date(System.currentTimeMillis()));
   }
 
-  public boolean isValidTokenPerUser( String token, String email) {
+  public boolean isValidTokenPerUser(String token, String email) {
     String tokenEmail = getSubject(token);
     return (email.equals(tokenEmail) && !isTokenExpired(token));
   }
@@ -82,5 +80,4 @@ public class IJwtService {
     byte[] secretBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(secretBytes);
   }
-
 }

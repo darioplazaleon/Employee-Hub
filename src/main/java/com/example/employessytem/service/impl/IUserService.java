@@ -12,7 +12,6 @@ import com.example.employessytem.repository.UserRepository;
 import com.example.employessytem.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

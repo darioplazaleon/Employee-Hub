@@ -1,6 +1,7 @@
 package com.example.employessytem.dto.employee;
 
 import com.example.employessytem.dto.vacation.VacationDTO;
+import com.example.employessytem.entity.Role;
 import com.example.employessytem.entity.User;
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +12,7 @@ public record EmployeeDTO(
     String name,
     String email,
     String position,
+    Role role,
     Long salary,
     LocalDate createdAt,
     List<VacationDTO> vacationRequests) {
@@ -20,6 +22,7 @@ public record EmployeeDTO(
         user.getName(),
         user.getEmail(),
         user.getPosition().getName(),
+        user.getRole(),
         user.getSalary(),
         user.getCreatedAt(),
         Optional.ofNullable(user.getVacationRequests()).orElse(List.of()).stream()

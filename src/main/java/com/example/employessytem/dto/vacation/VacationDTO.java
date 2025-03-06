@@ -1,9 +1,7 @@
 package com.example.employessytem.dto.vacation;
 
 import com.example.employessytem.entity.VacationRequest;
-
 import java.time.LocalDate;
-import java.util.List;
 
 public record VacationDTO(
     Long id,
@@ -14,8 +12,7 @@ public record VacationDTO(
     String comment,
     String status,
     String employeeName,
-    String approvedBy
-) {
+    String approvedBy) {
   public VacationDTO(VacationRequest vacationRequest) {
     this(
         vacationRequest.getId(),
@@ -28,5 +25,4 @@ public record VacationDTO(
         vacationRequest.getEmployee().getName(),
         vacationRequest.getApprovedBy() != null ? vacationRequest.getApprovedBy().getName() : null);
   }
-
 }

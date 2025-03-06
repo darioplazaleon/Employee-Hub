@@ -16,63 +16,95 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class IAuthService implements AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final IEmailService emailService;
-    private final AuthenticationManager authenticationManager;
-    private final IJwtService jwtService;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final IEmailService emailService;
+  private final AuthenticationManager authenticationManager;
+  private final IJwtService jwtService;
 
-    @Override
-    public TokenResponse login(LoginRequest employeeLogin) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(employeeLogin.email(), employeeLogin.password()));
+  @Override
+  public TokenResponse login(LoginRequest employeeLogin) {
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(employeeLogin.email(), employeeLogin.password()));
 
-        User user = userRepository.findByEmail(employeeLogin.email())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user =
+        userRepository
+            .findByEmail(employeeLogin.email())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String accessToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-        return new TokenResponse(accessToken, refreshToken);
+    String accessToken = jwtService.generateToken(user);
+    String refreshToken = jwtService.generateRefreshToken(user);
+    return new TokenResponse(accessToken, refreshToken);
+  }
+
+  @Override
+  public TokenResponse refreshToken(String authentication) {
+    if (authentication == null || !authentication.startsWith("Bearer ")) {
+      throw new IllegalArgumentException("Invalid auth header");
+    }
+    final String refreshToken = authentication.substring(7);
+    final String userEmail = jwtService.getSubject(refreshToken);
+    if (userEmail == null) {
+      return null;
     }
 
-    @Override
-    public TokenResponse refreshToken(String authentication) {
-        if (authentication == null || !authentication.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid auth header");
-        }
-        final String refreshToken = authentication.substring(7);
-        final String userEmail = jwtService.getSubject(refreshToken);
-        if (userEmail == null) {
-            return null;
-        }
-
-        final User user = userRepository.findByEmail(userEmail).orElseThrow();
-        final boolean isTokenValid = jwtService.isValidTokenPerUser(refreshToken, userEmail);
-        if (!isTokenValid) {
-            return null;
-        }
-
-        final String accessToken = jwtService.generateRefreshToken(user);
-
-        return new TokenResponse(accessToken, refreshToken);
+    final User user = userRepository.findByEmail(userEmail).orElseThrow();
+    final boolean isTokenValid = jwtService.isValidTokenPerUser(refreshToken, userEmail);
+    if (!isTokenValid) {
+      return null;
     }
 
-    @Override
-    public void changePassword(ChangePasswordRequest changePasswordRequest, String token) {
-        Long userId = jwtService.getUserIdFromToken(token);
+    final String accessToken = jwtService.generateRefreshToken(user);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    return new TokenResponse(accessToken, refreshToken);
+  }
 
-        if (!passwordEncoder.matches(changePasswordRequest.currentPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
-        }
+  @Override
+  public void changePassword(ChangePasswordRequest changePasswordRequest, String token) {
+    Long userId = jwtService.getUserIdFromToken(token);
 
-        if (passwordEncoder.matches(changePasswordRequest.newPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("New password must be different from the current password");
-        }
+    User user =
+        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
-        userRepository.save(user);
+    if (!passwordEncoder.matches(changePasswordRequest.currentPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("Invalid password");
     }
 
+    if (passwordEncoder.matches(changePasswordRequest.newPassword(), user.getPassword())) {
+      throw new IllegalArgumentException(
+          "New password must be different from the current password");
+    }
+
+    if (!isPasswordValid(changePasswordRequest.newPassword())) {
+      throw new IllegalArgumentException(
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character");
+    }
+
+    user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
+    userRepository.save(user);
+  }
+
+  private boolean isPasswordValid(String password) {
+    if (password.length() < 8) {
+      return false;
+    }
+
+    boolean hasUppercase = false;
+    boolean hasLowercase = false;
+    boolean hasDigit = false;
+    boolean hasSpecialChar = false;
+
+    for (char c : password.toCharArray()) {
+      if (Character.isUpperCase(c)) {
+        hasUppercase = true;
+      } else if (Character.isLowerCase(c)) {
+        hasLowercase = true;
+      } else if (Character.isDigit(c)) {
+        hasDigit = true;
+      } else if (!Character.isLetterOrDigit(c)) {
+        hasSpecialChar = true;
+      }
+    }
+    return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
+  }
 }
