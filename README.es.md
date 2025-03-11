@@ -1,6 +1,8 @@
 # Employee Hub
 Este repositorio contiene la implementación del backend para el sistema de gestión de empleados, desarrollado en **Java** usando **Spring Boot**. La API está documentada a través de **bump.sh**, lo que permite a los usuarios explorar fácilmente los endpoints.
 
+[en](https://img.shields.io/badge/lang-en-red)](https://github.com/darioplazaleon/Employee-Hub/blob/master/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow)](https://github.com/darioplazaleon/Employee-Hub/blob/master/README.es.md)
 
 ## Descripción
 
