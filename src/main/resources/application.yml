@@ -1,0 +1,20 @@
+application:
+  security:
+    jwt:
+      secret-key: ${APPLICATION_SECURITY_JWT_SECRET_KEY}
+      expiration: ${APPLICATION_SECURITY_JWT_EXPIRATION}
+      refresh-token:
+        expiration: ${APPLICATION_SECURITY_JWT_REFRESH_TOKEN_EXPIRATION}
+  email:
+    username: ${APPLICATION_EMAIL_USERNAME}
+    password: ${APPLICATION_EMAIL_PASSWORD}
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

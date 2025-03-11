@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 4102002
+      POSTGRES_PASSWORD: admin
       POSTGRES_DB: employees_system
     ports:
       - "5432:5432"
@@ -22,7 +22,12 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/employees_system
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 4102002
+      SPRING_DATASOURCE_PASSWORD: admin
+      APPLICATION_EMAIL_USERNAME: yourMail@example.com
+      APPLICATION_EMAIL_PASSWORD: yourPassword
+      APPLICATION_SECURITY_JWT_SECRET_KEY: yourSecretKey
+      APPLICATION_SECURITY_JWT_EXPIRATION: jwtExpirationMs
+      APPLICATION_SECURITY_JWT_REFRESH_TOKEN_EXPIRATION: jwtRefreshExpirationMs
 
 volumes:
   postgres_data:

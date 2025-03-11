@@ -61,6 +61,8 @@ public class SecurityConfig {
                     .hasAnyRole(ADMIN.name(), MANAGER.name(), USER.name())
                     .requestMatchers(HttpMethod.POST, "/api/v1/user/create/**")
                     .hasAnyRole(ADMIN.name())
+                        .requestMatchers("/api/v1/statistics/**")
+                        .hasAnyRole(ADMIN.name(), MANAGER.name())
                     .anyRequest()
                     .authenticated())
         .sessionManagement(
