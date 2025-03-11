@@ -52,6 +52,35 @@ Además, la documentación destaca que el acceso a cada endpoint se basa en role
 
 ## Instalación y Ejecución
 
+### Configuracion
+
+Antes de ejecutar la aplicación con Docker, asegúrate de actualizar las variables de entorno en el archivo `docker-compose.yml` bajo la sección `backend:`. Estas variables incluyen detalles de conexión a la base de datos y configuraciones específicas de la aplicación.
+
+Aquí están las variables que necesitas modificar:
+
+- `SPRING_DATASOURCE_URL`: La URL para la base de datos PostgreSQL. Puedes modificar esto, pero asegúrate de también modificar el archivo `application.yml` y lo mismo para las siguientes variables.
+- `SPRING_DATASOURCE_USERNAME`: El nombre de usuario para la base de datos PostgreSQL.
+- `SPRING_DATASOURCE_PASSWORD`: La contraseña para la base de datos PostgreSQL.
+- `APPLICATION_EMAIL_USERNAME`: El nombre de usuario del correo electrónico para enviar notificaciones. Puedes usar una cuenta de Gmail.
+- `APPLICATION_EMAIL_PASSWORD`: La contraseña del correo electrónico para enviar notificaciones. Necesitas obtener una contraseña de aplicación de tu proveedor de correo electrónico.
+- `APPLICATION_SECURITY_JWT_SECRET_KEY`: La clave secreta para la autenticación JWT. Para generar una, puedes usar esta [herramienta](https://jwtsecret.com/generate).
+- `APPLICATION_SECURITY_JWT_EXPIRATION`: El tiempo de expiración para los tokens JWT. No olvides agregar la unidad de tiempo (por ejemplo, 86400000ms para 24 horas).
+- `APPLICATION_SECURITY_JWT_REFRESH_TOKEN_EXPIRATION`: El tiempo de expiración para los tokens de actualización JWT. Lo mismo de arriba aplica, debe ser mayor que `JWT_EXPIRATION`.
+
+Ejemplo:
+```yaml
+backend:
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/employees_system
+    SPRING_DATASOURCE_USERNAME: postgres
+    SPRING_DATASOURCE_PASSWORD: admin
+    APPLICATION_EMAIL_USERNAME: jhondoe@example.com
+    APPLICATION_EMAIL_PASSWORD: aprx uior jkxv yzwq
+    APPLICATION_SECURITY_JWT_SECRET_KEY: d318c37807f51bdb8d809ad09952347af028e59cbed15d6727c1fa1744c2e3c3 Don't use this one, generate your own
+    APPLICATION_SECURITY_JWT_EXPIRATION: 86400000  # 24 hours
+    APPLICATION_SECURITY_JWT_REFRESH_TOKEN_EXPIRATION: 604800000 # 7 days
+```
+
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/your_username/employee-system-back.git
@@ -70,5 +99,44 @@ Además, la documentación destaca que el acceso a cada endpoint se basa en role
         ```bash
         docker-compose up --build
 
-La aplicacion iniciara por defecto en el puerto 8080:8080. Vas a poder acceder la API en `http://localhost:8080`.
-   
+### Uso
+
+La aplicación se iniciará en el puerto 8080 por defecto. Puedes acceder a la API en http://localhost:8080.  
+Cuando inicies la aplicación por primera vez, se creará un usuario ADMIN con las siguientes credenciales:
+
+- **Correo electrónico: jhondoe@example.com**
+- **Contraseña: password**
+
+Si deseas modificar estas credenciales antes de iniciar la aplicación, debes actualizar el código en la clase `IUserService` en la función `registerAdmin`. Aquí tienes el fragmento de código relevante de `IUserService`:
+
+```java
+public EmployeeDTO registerAdmin() {
+  Position adminPosition = positionRepository.findByName("ADMIN")
+          .orElseGet(() -> {
+            Position position = new Position();
+            position.setName("ADMIN");
+            return positionRepository.save(position);
+          }); // este código crea la posición ADMIN si no existe
+
+  var user =
+      User.builder()
+          .email("jhondoe@example.com")
+          .position(adminPosition)
+          .role(Role.ADMIN)
+          .salary(100000L)
+          .name("Jhon Doe")
+          .active(true)
+          .password(passwordEncoder.encode("password"))
+          .build();
+
+  userRepository.save(user); // este código guarda el usuario en la base de datos
+
+  return new EmployeeDTO(user);
+}
+```
+
+## Contacto
+
+Para cualquier consulta o soporte, por favor contacta a [contact@plazaleon.tech](mailto:contact@plazaleon.tech).
+
+Gracias por usar Employee Hub! Esperamos que te ayude a gestionar a tus empleados de manera eficiente.

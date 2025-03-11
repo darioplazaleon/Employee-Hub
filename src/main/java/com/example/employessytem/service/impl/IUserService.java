@@ -58,7 +58,6 @@ public class IUserService implements UserService {
     try {
       emailService.sendCredentialsEmail(employeeAdd.email(), employeeAdd.email(), randomPassword);
     } catch (MessagingException e) {
-      // Handle the exception, e.g., log the error
       e.printStackTrace();
     }
 
@@ -107,17 +106,22 @@ public class IUserService implements UserService {
 
   public EmployeeDTO registerAdmin() {
 
-    Position position = positionRepository.findById(1L).orElseThrow();
+    Position adminPosition = positionRepository.findByName("ADMIN")
+            .orElseGet(() -> {
+              Position position = new Position();
+                position.setName("ADMIN");
+                return positionRepository.save(position);
+            });
 
     var user =
         User.builder()
-            .email("darioalessandrop@gmail.com")
-            .position(position)
+            .email("jhondoe@example.com")
+            .position(adminPosition)
             .role(Role.ADMIN)
             .salary(100000L)
-            .name("Dario")
+            .name("Jhon Doe")
             .active(true)
-            .password(passwordEncoder.encode("4102002"))
+            .password(passwordEncoder.encode("password"))
             .build();
 
     userRepository.save(user);
