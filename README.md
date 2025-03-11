@@ -2,8 +2,8 @@
 
 This repository contains the backend implementation for the employee management system, developed in **Java** using **Spring Boot**. The API is documented through **bump.sh**, allowing users to easily explore the endpoints.
 
-[![en](https://img.shields.io/badge/lang-en-red)]('https://github.com/darioplazaleon/Employee-Hub/blob/master/README.md')
-[![es](https://img.shields.io/badge/lang-es-yellow)]('https://github.com/darioplazaleon/Employee-Hub/blob/master/README.es.md')
+[![en](https://img.shields.io/badge/lang-en-red)](https://github.com/darioplazaleon/Employee-Hub/blob/master/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow)](https://github.com/darioplazaleon/Employee-Hub/blob/master/README.es.md)
 
 ## Description
 
